@@ -1,0 +1,131 @@
+/* ============================================================
+   Starship, Explained — shared design system
+   Every module styles itself under its own section id and
+   uses ONLY these tokens for color / type / spacing.
+   ============================================================ */
+:root {
+  /* surfaces */
+  --bg: #04060a;
+  --bg-2: #080c13;
+  --panel: #0c121b;
+  --panel-2: #111925;
+  --line: #1b2533;
+  --line-2: #2a3647;
+
+  /* text */
+  --text: #e8edf3;
+  --text-2: #b4c0ce;
+  --muted: #7b889a;
+  --faint: #4b5768;
+
+  /* semantic accents */
+  --steel: #c9d3de;      /* stainless hull */
+  --steel-dark: #8d99a8;
+  --flame: #ff7a1a;      /* engine exhaust / heat */
+  --flame-2: #ffc46b;    /* exhaust core */
+  --plasma: #ff4f6d;     /* reentry plasma */
+  --methane: #45b8ff;    /* CH4 / fuel */
+  --lox: #a8f0ff;        /* liquid oxygen */
+  --booster: #e7b65a;    /* Super Heavy highlight color */
+  --ship: #7fd4c1;       /* Starship (upper stage) highlight color */
+  --tower: #9aa7ff;      /* tower / chopsticks */
+  --ok: #4ade80;
+  --warn: #facc15;
+  --bad: #f87171;
+
+  /* type */
+  --font-display: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, Menlo, monospace;
+
+  /* spacing scale */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px;
+  --s6: 32px; --s7: 48px; --s8: 64px; --s9: 96px;
+
+  --radius: 10px;
+  --radius-sm: 6px;
+  --maxw: 1240px;
+  --ease: cubic-bezier(.2,.7,.2,1);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img, svg, canvas { display: block; max-width: 100%; }
+a { color: var(--methane); text-decoration: none; }
+a:hover { text-decoration: underline; }
+button { font: inherit; color: inherit; }
+
+/* ---------- layout primitives ---------- */
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--s4); }
+@media (min-width: 720px) { .wrap { padding: 0 var(--s6); } }
+
+.section { padding: var(--s9) 0; border-top: 1px solid var(--line); position: relative; }
+.section-head { max-width: 760px; margin-bottom: var(--s7); }
+.eyebrow {
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--flame); margin: 0 0 var(--s3);
+  display: flex; align-items: center; gap: var(--s2);
+}
+.eyebrow .num { color: var(--muted); }
+h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; letter-spacing: -0.01em; line-height: 1.1; }
+h2 { font-size: clamp(30px, 4.4vw, 52px); font-weight: 800; }
+h3 { font-size: clamp(20px, 2.2vw, 26px); font-weight: 700; }
+h4 { font-size: 16px; font-weight: 700; }
+.lede { font-size: clamp(16px, 1.5vw, 19px); color: var(--text-2); margin: var(--s4) 0 0; }
+p { margin: 0 0 var(--s4); }
+.muted { color: var(--muted); }
+.mono { font-family: var(--font-mono); }
+
+/* ---------- components ---------- */
+.panel {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: var(--s5);
+}
+.btn {
+  appearance: none; border: 1px solid var(--line-2); background: var(--panel-2);
+  color: var(--text); padding: 8px 14px; border-radius: var(--radius-sm);
+  font-family: var(--font-mono); font-size: 13px; cursor: pointer;
+  min-height: 36px; transition: border-color .15s var(--ease), background .15s var(--ease), color .15s;
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+}
+.btn:hover { border-color: var(--steel-dark); }
+.btn:focus-visible { outline: 2px solid var(--methane); outline-offset: 2px; }
+.btn.is-active, .btn[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+.btn-primary { background: var(--flame); border-color: var(--flame); color: #1a0a00; font-weight: 600; }
+.btn-primary:hover { background: var(--flame-2); border-color: var(--flame-2); }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 999px; border: 1px solid var(--line-2); color: var(--text-2);
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+.stat { display: flex; flex-direction: column; gap: 2px; }
+.stat .k { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.stat .v { font-family: var(--font-mono); font-size: 20px; color: var(--text); font-variant-numeric: tabular-nums; }
+
+input[type="range"] { width: 100%; accent-color: var(--flame); }
+
+.steps { display: flex; gap: var(--s2); flex-wrap: wrap; }
+.note {
+  font-size: 13px; color: var(--muted); border-left: 2px solid var(--line-2);
+  padding-left: var(--s3); margin-top: var(--s4);
+}
+.grid-2 { display: grid; gap: var(--s5); grid-template-columns: 1fr; }
+@media (min-width: 900px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}

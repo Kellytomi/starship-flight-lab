@@ -1,0 +1,167 @@
+/* ============================================================
+   06 Reentry & the flip — all selectors scoped to #sec-reentry
+   ============================================================ */
+#sec-reentry .re { display: grid; gap: var(--s5); min-width: 0; }
+#sec-reentry .re-vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+#sec-reentry .re-small { font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; }
+#sec-reentry .re-panel-head { margin-bottom: var(--s4); }
+#sec-reentry .re-panel-head p { margin: var(--s2) 0 0; font-size: 14px; }
+#sec-reentry .re-dot-ship { background: var(--ship); }
+#sec-reentry .re-dot-steel { background: var(--steel); }
+#sec-reentry .re-dot-tower { background: var(--tower); }
+
+/* ---------- KPI strip ---------- */
+#sec-reentry .re-kpis {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s4) var(--s5);
+  margin: 0; padding: var(--s4) 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+#sec-reentry .re-kpis .stat dd, #sec-reentry .re-kpis .stat dt { margin: 0; }
+@media (min-width: 720px) { #sec-reentry .re-kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* ---------- 1. scrubber ---------- */
+#sec-reentry .re-scrub { padding: 0; overflow: hidden; }
+#sec-reentry .re-scrub-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { #sec-reentry .re-scrub-grid { grid-template-columns: minmax(0, 1fr) 300px; } }
+
+#sec-reentry .re-stage {
+  position: relative; aspect-ratio: 16 / 10; background: var(--bg-2); min-height: 240px; overflow: hidden;
+}
+@media (max-width: 599px) { #sec-reentry .re-stage { aspect-ratio: 4 / 3.4; } }
+#sec-reentry .re-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+#sec-reentry .re-hud {
+  position: absolute; top: var(--s3); left: var(--s3); right: var(--s3);
+  display: flex; justify-content: space-between; gap: var(--s2); pointer-events: none; flex-wrap: wrap;
+}
+#sec-reentry .re-hud .chip { background: rgba(4, 6, 10, .55); backdrop-filter: blur(6px); }
+#sec-reentry .re-hud .dot { background: var(--ship); }
+#sec-reentry .re-hud-time { color: var(--text); font-variant-numeric: tabular-nums; }
+#sec-reentry .re-caption {
+  position: absolute; left: var(--s3); right: var(--s3); bottom: var(--s3); margin: 0;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-2); pointer-events: none;
+  text-shadow: 0 1px 2px rgba(4, 6, 10, .9), 0 0 12px rgba(4, 6, 10, .8);
+}
+
+#sec-reentry .re-readouts {
+  padding: var(--s5); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s4) var(--s3); align-content: start; border-top: 1px solid var(--line);
+}
+@media (min-width: 900px) { #sec-reentry .re-readouts { border-top: 0; border-left: 1px solid var(--line); } }
+#sec-reentry .re-readouts .stat .v { font-size: 17px; }
+#sec-reentry .re-stat-wide { grid-column: 1 / -1; }
+#sec-reentry .re-stat-wide .v { font-size: 20px; color: var(--ship); }
+#sec-reentry .re-phase-copy {
+  grid-column: 1 / -1; margin: var(--s2) 0 0; font-size: 14px; color: var(--text-2);
+  line-height: 1.55; border-top: 1px solid var(--line); padding-top: var(--s4);
+}
+
+#sec-reentry .re-controls { padding: var(--s4) var(--s5) var(--s5); border-top: 1px solid var(--line); }
+#sec-reentry .re-ctl-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) var(--s3); }
+#sec-reentry .re-landing { display: inline-flex; gap: var(--s2); margin-left: auto; flex-wrap: wrap; }
+#sec-reentry .re-timeline { position: relative; margin-top: var(--s4); padding-bottom: 36px; }
+@media (min-width: 900px) {
+  #sec-reentry .re-timeline { padding-bottom: 52px; }
+  #sec-reentry .re-mark.is-alt .re-mark-tick { height: 24px; }
+}
+#sec-reentry .re-timeline input[type="range"] { margin: 0; height: 28px; cursor: pointer; }
+#sec-reentry .re-timeline input[type="range"]:focus-visible { outline: 2px solid var(--methane); outline-offset: 4px; border-radius: 4px; }
+#sec-reentry .re-marks { position: absolute; left: 8px; right: 8px; top: 30px; height: 30px; }
+#sec-reentry .re-mark {
+  position: absolute; top: 0; transform: translateX(-50%); appearance: none; background: none; border: 0;
+  padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  color: var(--muted); font-family: var(--font-mono); font-size: 10px; letter-spacing: .04em; white-space: nowrap;
+  min-height: 30px;
+}
+#sec-reentry .re-mark.is-first { transform: translateX(0); align-items: flex-start; }
+#sec-reentry .re-mark.is-last { transform: translateX(-100%); align-items: flex-end; }
+#sec-reentry .re-mark-tick { width: 1px; height: 8px; background: var(--line-2); display: block; }
+#sec-reentry .re-mark.is-active .re-mark-tick { background: var(--flame); }
+#sec-reentry .re-mark.is-active { color: var(--text-2); }
+#sec-reentry .re-mark:hover { color: var(--text); }
+#sec-reentry .re-mark:focus-visible { outline: 2px solid var(--methane); outline-offset: 2px; border-radius: 3px; }
+@media (max-width: 899px) {
+  #sec-reentry .re-mark-label { display: none; }
+  #sec-reentry .re-mark.is-first .re-mark-label, #sec-reentry .re-mark.is-last .re-mark-label { display: block; }
+  #sec-reentry .re-mark-tick { height: 10px; width: 2px; }
+}
+
+/* ---------- 2. heat shield ---------- */
+#sec-reentry .re-shield-stage {
+  position: relative; aspect-ratio: 2.2 / 1; min-height: 150px; background: var(--bg-2);
+  border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden;
+}
+#sec-reentry .re-shield-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair; touch-action: manipulation; }
+#sec-reentry .re-shield-stage canvas:focus-visible { outline: 2px solid var(--methane); outline-offset: -2px; }
+#sec-reentry .re-tile-info { margin-top: var(--s4); min-height: 96px; }
+#sec-reentry .re-tile-info p { margin: var(--s2) 0 0; font-size: 14px; color: var(--text-2); line-height: 1.55; }
+#sec-reentry .re-shield .re-ctl-row { margin-top: var(--s3); }
+#sec-reentry .re-xsec-wrap { margin-top: var(--s5); border-top: 1px solid var(--line); padding-top: var(--s4); }
+#sec-reentry .re-xsec { width: 100%; height: auto; max-width: 440px; }
+#sec-reentry .re-xs-label { font-family: var(--font-mono); font-size: 9px; fill: var(--text-2); letter-spacing: .04em; }
+#sec-reentry .re-xs-dim { fill: var(--muted); }
+#sec-reentry .re-xs-label-hot { fill: var(--plasma); }
+#sec-reentry .re-xs-plasma path { fill: none; stroke: var(--plasma); stroke-width: 1.5; stroke-dasharray: 4 3; }
+#sec-reentry .re-xs-tiles path { fill: var(--panel-2); stroke: var(--steel-dark); stroke-width: 1; }
+#sec-reentry .re-xs-backup { fill: rgba(255, 122, 26, .22); }
+#sec-reentry .re-xs-hatch { stroke: rgba(255, 196, 107, .35); stroke-width: 1; }
+#sec-reentry .re-xs-studs rect { fill: var(--steel-dark); }
+#sec-reentry .re-xs-hull { fill: var(--steel); }
+
+/* ---------- 3. flaps ---------- */
+#sec-reentry .re-flap-grid { display: grid; gap: var(--s4); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 600px) and (max-width: 899px), (min-width: 1100px) {
+  #sec-reentry .re-flap-grid { grid-template-columns: minmax(0, 1.2fr) minmax(220px, .8fr); }
+}
+#sec-reentry .re-flap-svg { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+#sec-reentry .re-flapsvg { width: 100%; height: auto; display: block; }
+#sec-reentry .re-f-grid line { stroke: var(--line); stroke-width: 1; stroke-dasharray: 2 4; }
+#sec-reentry .re-f-label { font-family: var(--font-mono); font-size: 9px; fill: var(--text-2); letter-spacing: .08em; }
+#sec-reentry .re-f-dim { fill: var(--muted); }
+#sec-reentry .re-f-body { fill: var(--panel-2); stroke: var(--steel); stroke-width: 1.2; }
+#sec-reentry .re-f-cg { fill: var(--flame); }
+#sec-reentry .re-f-flap { fill: rgba(141, 153, 168, .55); stroke: var(--steel); stroke-width: 1; transition: all .18s var(--ease); }
+#sec-reentry .re-f-flap.is-folded { fill: rgba(201, 211, 222, .9); }
+#sec-reentry .re-f-drag { fill: rgba(255, 79, 109, .35); stroke: var(--plasma); stroke-width: 1; transition: r .18s var(--ease), cx .18s var(--ease), cy .18s var(--ease); }
+#sec-reentry .re-f-ref { stroke: var(--line-2); stroke-width: 1; stroke-dasharray: 3 3; }
+#sec-reentry .re-f-side { fill: var(--panel-2); stroke: var(--steel); stroke-width: 1.2; }
+#sec-reentry .re-f-sideflap { fill: var(--steel-dark); }
+#sec-reentry .re-f-tileside { fill: rgba(141, 153, 168, .35); }
+#sec-reentry [data-ind] { transition: transform .25s var(--ease); transform-box: fill-box; transform-origin: center; }
+#sec-reentry .re-f-arrow { fill: none; stroke: var(--flame); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+#sec-reentry .re-flap-ctls { display: grid; gap: var(--s3); align-content: start; }
+#sec-reentry .re-fs { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: var(--s3) var(--s4) var(--s4); margin: 0; min-width: 0; }
+#sec-reentry .re-fs legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 0 6px; }
+#sec-reentry .re-slider { display: grid; gap: 2px; margin-top: var(--s2); font-size: 13px; color: var(--text-2); }
+#sec-reentry .re-slider span { display: flex; justify-content: space-between; }
+#sec-reentry .re-slider b { font-family: var(--font-mono); font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums; }
+#sec-reentry .re-slider input[type="range"] { margin: 0; }
+#sec-reentry .re-slider input[type="range"]:focus-visible { outline: 2px solid var(--methane); outline-offset: 3px; border-radius: 4px; }
+#sec-reentry .re-flap-read {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s3); margin-top: var(--s4);
+  padding-top: var(--s4); border-top: 1px solid var(--line);
+}
+@media (min-width: 600px) { #sec-reentry .re-flap-read { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+#sec-reentry .re-flap-read .stat .v { font-size: 15px; }
+#sec-reentry .re-flap-copy { margin: var(--s4) 0 0; font-size: 14px; color: var(--text-2); line-height: 1.55; min-height: 3.1em; }
+
+/* ---------- 4. comparison ---------- */
+#sec-reentry .re-cmp { display: grid; gap: var(--s3); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 760px) { #sec-reentry .re-cmp { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+#sec-reentry .re-cmp-col { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: var(--s4); min-width: 0; }
+#sec-reentry .re-cmp-hero { border-color: rgba(127, 212, 193, .45); box-shadow: inset 0 0 0 1px rgba(127, 212, 193, .15); }
+#sec-reentry .re-cmp-col h4 { display: flex; align-items: center; gap: var(--s2); flex-wrap: wrap; margin-bottom: var(--s3); }
+#sec-reentry .re-cmp-col h4 .muted { font-weight: 500; font-family: var(--font-body); font-size: 13px; }
+#sec-reentry .re-cmp-col dl { margin: 0; display: grid; gap: var(--s3); }
+#sec-reentry .re-cmp-col dl > div { display: grid; gap: 2px; }
+#sec-reentry .re-cmp-col dt { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+#sec-reentry .re-cmp-col dd { margin: 0; font-size: 14px; color: var(--text-2); line-height: 1.5; }
+#sec-reentry .re-cmp-hero dd { color: var(--text); }
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  #sec-reentry .re-f-flap, #sec-reentry .re-f-drag, #sec-reentry [data-ind] { transition: none; }
+}

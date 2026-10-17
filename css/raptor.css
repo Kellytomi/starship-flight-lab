@@ -1,0 +1,212 @@
+/* ============================================================
+   03 Raptor engine — all selectors scoped under #sec-raptor
+   Uses only tokens from base.css (plus rgba variants).
+   ============================================================ */
+
+#sec-raptor #mount-raptor { display: grid; gap: var(--s8); }
+#sec-raptor .rp-kicker {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); margin: 0 0 var(--s3);
+}
+#sec-raptor .rp-block-head { max-width: 720px; margin-bottom: var(--s5); }
+#sec-raptor .rp-block-lede { color: var(--text-2); margin: var(--s3) 0 0; }
+#sec-raptor .panel > :last-child { margin-bottom: 0; }
+
+/* ---------- 1. Schematic ---------- */
+#sec-raptor .rp-ffsc { align-items: start; }
+#sec-raptor .rp-figure {
+  margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: var(--s4); position: relative; overflow: hidden;
+  background-image:
+    linear-gradient(rgba(201,211,222,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,211,222,.035) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+#sec-raptor .rp-svg { width: 100%; height: auto; display: block; --rp-spin: .6s; }
+#sec-raptor .rp-caption { font-size: 12px; color: var(--muted); font-family: var(--font-mono); margin-top: var(--s3); }
+#sec-raptor .rp-legend { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s4); }
+#sec-raptor .rp-legend .chip { text-transform: none; letter-spacing: .02em; }
+#sec-raptor .rp-legend-w { color: var(--muted); }
+
+/* svg text */
+#sec-raptor .rp-lbl { font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; fill: var(--text-2); pointer-events: none; }
+#sec-raptor .rp-lbl-sub { fill: var(--muted); font-size: 10px; }
+#sec-raptor .rp-lbl-dim { fill: var(--faint); font-size: 10px; }
+#sec-raptor .rp-flowlbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: .04em; fill: var(--muted); }
+#sec-raptor .rp-flowlbl-ch4 { fill: var(--methane); opacity: .85; }
+#sec-raptor .rp-flowlbl-lox { fill: var(--lox); opacity: .85; }
+#sec-raptor .rp-flowlbl-hot { fill: var(--flame-2); opacity: .85; }
+@media (max-width: 600px) {
+  #sec-raptor .rp-lbl { font-size: 13px; }
+  #sec-raptor .rp-lbl-sub, #sec-raptor .rp-lbl-dim, #sec-raptor .rp-flowlbl { font-size: 12px; }
+}
+
+/* nodes */
+#sec-raptor .rp-node { cursor: pointer; outline: none; }
+#sec-raptor .rp-shape { fill: var(--panel-2); stroke: var(--steel-dark); stroke-width: 1.25; transition: stroke .15s, fill .15s; }
+#sec-raptor .rp-node-ch4 .rp-shape { stroke: rgba(69,184,255,.75); }
+#sec-raptor .rp-node-lox .rp-shape { stroke: rgba(168,240,255,.75); }
+#sec-raptor .rp-node:hover .rp-shape, #sec-raptor .rp-node.is-selected .rp-shape { stroke: var(--text); fill: var(--line); }
+#sec-raptor .rp-node:focus-visible .rp-shape { stroke: var(--methane); stroke-width: 2; }
+#sec-raptor .rp-node:focus-visible .rp-jacket { stroke: rgba(69,184,255,.6); }
+#sec-raptor .rp-liquid { fill: rgba(69,184,255,.18); stroke: none; }
+#sec-raptor .rp-node-lox .rp-liquid { fill: rgba(168,240,255,.16); }
+#sec-raptor .rp-rotor line { stroke: var(--steel-dark); stroke-width: 1.5; stroke-linecap: round; }
+#sec-raptor .rp-rotor-hub { fill: var(--steel); }
+#sec-raptor .rp-rotor { transform-box: fill-box; transform-origin: center; animation: rp-spin var(--rp-spin) linear infinite; }
+@keyframes rp-spin { to { transform: rotate(360deg); } }
+#sec-raptor .rp-shaft { stroke: var(--steel-dark); stroke-width: 3; stroke-dasharray: 2 3; }
+#sec-raptor .rp-pb { stroke: rgba(255,122,26,.8); }
+#sec-raptor .rp-flamelet { fill: rgba(255,196,107,.7); stroke: var(--flame); stroke-width: 1; }
+#sec-raptor .rp-vent { fill: none; stroke: var(--flame); stroke-width: 1.5; opacity: .9; }
+#sec-raptor .rp-vent-2 { opacity: .45; }
+#sec-raptor .rp-chamber { fill: rgba(255,122,26,.08); stroke: var(--steel); }
+#sec-raptor .rp-bell { fill: rgba(201,211,222,.04); stroke: var(--steel); }
+#sec-raptor .rp-injector { stroke: var(--steel-dark); stroke-width: 1; stroke-dasharray: 3 3; }
+#sec-raptor .rp-jacket { fill: none; stroke: rgba(69,184,255,.22); stroke-width: 9; stroke-linejoin: round; pointer-events: stroke; transition: stroke .15s; }
+#sec-raptor .rp-node:hover .rp-jacket, #sec-raptor .rp-node.is-selected .rp-jacket { stroke: rgba(69,184,255,.45); }
+
+/* pipes */
+#sec-raptor .rp-pipe { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+#sec-raptor .rp-pipe-main { stroke-width: 5; }
+#sec-raptor .rp-pipe-small { stroke-width: 2.5; }
+#sec-raptor .rp-pipe-ch4 { stroke: rgba(69,184,255,.22); }
+#sec-raptor .rp-pipe-lox { stroke: rgba(168,240,255,.2); }
+#sec-raptor .rp-pipe-hot { stroke: rgba(255,122,26,.25); }
+#sec-raptor .rp-arrow-ch4 { fill: var(--methane); }
+#sec-raptor .rp-arrow-lox { fill: var(--lox); }
+#sec-raptor .rp-arrow-hot { fill: var(--flame); }
+
+/* particles (also used as legend dots) */
+#sec-raptor .rp-dot-ch4 { fill: var(--methane); background: var(--methane); }
+#sec-raptor .rp-dot-lox { fill: var(--lox); background: var(--lox); }
+#sec-raptor .rp-dot-hot { fill: var(--flame-2); background: var(--flame); stroke: rgba(255,122,26,.5); stroke-width: 3; }
+#sec-raptor .rp-dots { pointer-events: none; }
+#sec-raptor .rp-dots .rp-dot-ch4 { fill: var(--methane); }
+
+/* plume */
+#sec-raptor .rp-plume { pointer-events: none; transition: opacity .2s; }
+#sec-raptor .rp-stop-core { stop-color: var(--flame-2); stop-opacity: .8; }
+#sec-raptor .rp-stop-mid { stop-color: var(--flame); stop-opacity: .45; }
+#sec-raptor .rp-stop-end { stop-color: var(--flame); stop-opacity: 0; }
+#sec-raptor .rp-stop-blue { stop-color: var(--lox); stop-opacity: .55; }
+#sec-raptor .rp-stop-blue-end { stop-color: var(--methane); stop-opacity: 0; }
+#sec-raptor .rp-plume-glow { fill: var(--flame); opacity: .3; }
+#sec-raptor .rp-plume-outer { fill: url(#rp-plume-grad); }
+#sec-raptor .rp-plume-core { fill: url(#rp-core-grad); }
+#sec-raptor .rp-diamond { fill: var(--flame-2); }
+
+/* side panels */
+#sec-raptor .rp-side { display: grid; gap: var(--s4); }
+#sec-raptor .rp-info { min-height: 150px; }
+#sec-raptor .rp-info-head { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; margin-bottom: var(--s2); }
+#sec-raptor .rp-info-title { font-size: 18px; }
+#sec-raptor .rp-info-body { color: var(--text-2); font-size: 15px; margin: 0; }
+#sec-raptor .rp-info-kind:empty { display: none; }
+#sec-raptor .rp-info-kind[data-kind="ch4"] { color: var(--methane); border-color: rgba(69,184,255,.5); }
+#sec-raptor .rp-info-kind[data-kind="lox"] { color: var(--lox); border-color: rgba(168,240,255,.5); }
+#sec-raptor .rp-info-kind[data-kind="hot"] { color: var(--flame-2); border-color: rgba(255,122,26,.6); }
+
+#sec-raptor .rp-cycles { display: flex; flex-wrap: wrap; gap: var(--s2); margin-bottom: var(--s4); }
+#sec-raptor .rp-cycle-title { margin-bottom: var(--s2); }
+#sec-raptor .rp-cycle-blurb { color: var(--text-2); font-size: 15px; }
+#sec-raptor .rp-cycle-facts { margin: 0; display: grid; gap: var(--s2); border-top: 1px solid var(--line); padding-top: var(--s3); }
+#sec-raptor .rp-cycle-facts div { display: grid; grid-template-columns: 1fr; gap: 2px; }
+@media (min-width: 480px) { #sec-raptor .rp-cycle-facts div { grid-template-columns: 170px 1fr; gap: var(--s3); } }
+#sec-raptor .rp-cycle-facts dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+#sec-raptor .rp-cycle-facts dd { margin: 0; font-size: 14px; color: var(--text); }
+
+#sec-raptor .rp-throttle-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s3); }
+#sec-raptor .rp-throttle-val { font-size: 20px; color: var(--flame-2); font-variant-numeric: tabular-nums; }
+#sec-raptor .rp-range-ticks { display: flex; justify-content: space-between; font-size: 10px; color: var(--faint); letter-spacing: .08em; text-transform: uppercase; margin-top: 2px; }
+#sec-raptor .rp-readouts { margin: var(--s4) 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s4); }
+#sec-raptor .rp-readouts .stat .v { margin: 0; font-size: 18px; }
+#sec-raptor .rp-readouts .rp-sub { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+
+/* ---------- 2. Generations ---------- */
+#sec-raptor .rp-gens-grid { align-items: start; }
+#sec-raptor .rp-bars { display: grid; gap: var(--s4); }
+#sec-raptor .rp-bar-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: var(--s2); }
+#sec-raptor .rp-bar-set { display: grid; gap: 5px; }
+#sec-raptor .rp-bar { display: grid; grid-template-columns: 28px 1fr 92px; align-items: center; gap: var(--s2); }
+#sec-raptor .rp-bar-gen { font-size: 11px; color: var(--text-2); }
+#sec-raptor .rp-bar-val { font-size: 12px; color: var(--text); text-align: right; font-variant-numeric: tabular-nums; }
+#sec-raptor .rp-bar-track { display: block; height: 10px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+#sec-raptor .rp-bar-fill { display: block; height: 100%; width: var(--w); border-radius: 999px; transform-origin: left; transform: scaleX(0); transition: transform .9s var(--ease); }
+#sec-raptor .rp-bars.is-in .rp-bar-fill { transform: scaleX(1); }
+#sec-raptor .rp-bar-r1 { background: var(--steel-dark); transition-delay: .05s; }
+#sec-raptor .rp-bar-r2 { background: var(--booster); transition-delay: .2s; }
+#sec-raptor .rp-bar-r3 { background: var(--flame); transition-delay: .35s; }
+#sec-raptor .rp-gens-side { display: grid; gap: var(--s4); }
+#sec-raptor .rp-gen-cards { display: grid; gap: var(--s3); }
+#sec-raptor .rp-gen-card { padding: var(--s3) var(--s4); border: 1px solid var(--line); border-left-width: 3px; border-radius: var(--radius-sm); background: var(--panel); }
+#sec-raptor .rp-gen-card p { margin: var(--s2) 0 0; font-size: 14px; color: var(--text-2); }
+#sec-raptor .rp-gen-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); flex-wrap: wrap; }
+#sec-raptor .rp-gen-r1 { border-left-color: var(--steel-dark); }
+#sec-raptor .rp-gen-r2 { border-left-color: var(--booster); }
+#sec-raptor .rp-gen-r3 { border-left-color: var(--flame); }
+#sec-raptor .rp-rvac-svg { width: 100%; height: auto; max-width: 420px; margin: 0 auto var(--s4); }
+#sec-raptor .rp-rvac-bg { fill: var(--bg-2); }
+#sec-raptor .rp-rvac-shape { fill: rgba(201,211,222,.06); stroke: var(--steel); stroke-width: 1.25; }
+#sec-raptor .rp-rvac-big { stroke: var(--ship); fill: rgba(127,212,193,.08); }
+#sec-raptor .rp-dim { stroke: var(--faint); stroke-width: 1; stroke-dasharray: 2 3; }
+#sec-raptor .rp-rvac p:last-child { font-size: 15px; color: var(--text-2); }
+
+/* ---------- 3. Engine layout ---------- */
+#sec-raptor .rp-layout-grid { align-items: start; }
+#sec-raptor .rp-modes-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); flex-wrap: wrap; margin-bottom: var(--s4); }
+#sec-raptor .rp-modes { display: flex; flex-wrap: wrap; gap: var(--s2); }
+#sec-raptor .rp-stage { color: var(--flame-2); border-color: rgba(255,122,26,.5); }
+#sec-raptor .rp-stage[hidden] { display: none; }
+#sec-raptor .rp-booster-svg, #sec-raptor .rp-ship-svg { width: 100%; height: auto; max-width: 520px; margin: 0 auto; }
+#sec-raptor .rp-ship-svg { max-width: 340px; margin-bottom: var(--s4); }
+#sec-raptor .rp-hull { fill: var(--bg-2); stroke: var(--steel-dark); stroke-width: 1.5; }
+#sec-raptor .rp-hull-inner { fill: none; stroke: var(--line-2); stroke-width: 1; }
+#sec-raptor .rp-ring-guide { fill: none; stroke: var(--line-2); stroke-width: 1; stroke-dasharray: 3 4; }
+#sec-raptor .rp-ring-gimbal { stroke: rgba(154,167,255,.35); }
+#sec-raptor .rp-eng { cursor: pointer; outline: none; }
+#sec-raptor .rp-ship-svg .rp-eng { cursor: default; }
+#sec-raptor .rp-eng-glow { fill: var(--flame); opacity: 0; transition: opacity .5s var(--ease); }
+#sec-raptor .rp-eng-lip { fill: var(--panel-2); stroke: var(--line-2); stroke-width: 1.25; transition: stroke .3s, fill .3s; }
+#sec-raptor .rp-eng-core { fill: var(--line); transition: fill .4s var(--ease); }
+#sec-raptor .rp-eng-x { stroke: var(--bad); stroke-width: 2; stroke-linecap: round; opacity: 0; transition: opacity .2s; }
+#sec-raptor .rp-eng.is-lit .rp-eng-glow { opacity: .55; }
+#sec-raptor .rp-eng.is-lit .rp-eng-lip { stroke: var(--flame); fill: rgba(255,122,26,.25); }
+#sec-raptor .rp-eng.is-lit .rp-eng-core { fill: var(--flame-2); }
+#sec-raptor .rp-eng-vac.is-lit .rp-eng-lip { stroke: var(--ship); }
+#sec-raptor .rp-eng.is-out .rp-eng-lip { stroke: var(--bad); fill: rgba(248,113,113,.08); }
+#sec-raptor .rp-eng.is-out .rp-eng-x { opacity: .9; }
+#sec-raptor .rp-eng:hover .rp-eng-lip { stroke: var(--text); }
+#sec-raptor .rp-eng:focus-visible .rp-eng-lip { stroke: var(--methane); stroke-width: 2.5; }
+#sec-raptor .rp-mode-note { margin: var(--s4) 0; font-size: 14px; color: var(--text-2); }
+#sec-raptor .rp-eng-legend { list-style: none; margin: 0; padding: var(--s3) 0 0; border-top: 1px solid var(--line); display: grid; gap: var(--s2); font-size: 13px; color: var(--text-2); }
+#sec-raptor .rp-eng-legend li { display: flex; gap: var(--s3); align-items: flex-start; }
+#sec-raptor .rp-eng-legend strong { color: var(--text); font-weight: 600; }
+#sec-raptor .rp-key { flex: 0 0 auto; width: 14px; height: 14px; border-radius: 50%; margin-top: 4px; border: 1.5px solid var(--flame); background: rgba(255,122,26,.25); box-shadow: inset 0 0 0 3px var(--panel), inset 0 0 0 7px var(--flame-2); }
+#sec-raptor .rp-key-o { border-style: dashed; }
+#sec-raptor .rp-layout-side { display: grid; gap: var(--s4); }
+#sec-raptor .rp-engineout-head { display: flex; justify-content: space-between; align-items: center; gap: var(--s3); }
+#sec-raptor .rp-engineout-head .rp-kicker { margin: 0; }
+#sec-raptor .rp-readouts-4 { margin-top: var(--s4); }
+#sec-raptor .rp-readouts .v[data-state="ok"] { color: var(--ok); }
+#sec-raptor .rp-readouts .v[data-state="warn"] { color: var(--warn); }
+#sec-raptor .rp-readouts .v[data-state="bad"] { color: var(--bad); }
+#sec-raptor .rp-verdict { margin: var(--s4) 0 0; font-size: 13px; color: var(--text-2); border-top: 1px solid var(--line); padding-top: var(--s3); }
+#sec-raptor .rp-ship-panel p:last-child { font-size: 15px; color: var(--text-2); }
+
+/* ---------- 4. Methane ---------- */
+#sec-raptor .rp-methane { display: grid; gap: var(--s5); grid-template-columns: 1fr; }
+@media (min-width: 900px) { #sec-raptor .rp-methane { grid-template-columns: 1.4fr 1fr; align-items: start; } }
+#sec-raptor .rp-methane-text h3 { margin-bottom: var(--s4); }
+#sec-raptor .rp-methane-text p:not(.rp-kicker) { color: var(--text-2); }
+#sec-raptor .rp-methane-eq { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: var(--s4); display: grid; gap: var(--s3); }
+#sec-raptor .rp-eq { display: grid; gap: 2px; font-size: 15px; color: var(--text); }
+#sec-raptor .rp-eq-k { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+#sec-raptor .rp-eq-result { padding-top: var(--s3); border-top: 1px dashed var(--line-2); color: var(--methane); }
+#sec-raptor .rp-methane-eq .note { margin-top: var(--s2); }
+
+/* ---------- motion preferences ---------- */
+@media (prefers-reduced-motion: reduce) {
+  #sec-raptor .rp-rotor { animation: none; }
+  #sec-raptor .rp-bar-fill { transform: none; }
+}

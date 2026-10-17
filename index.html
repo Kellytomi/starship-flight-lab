@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Starship Flight Lab</title>
+  <meta name="description" content="An interactive 3D flight lab that shows how Starship and Super Heavy work: the forces at every moment, hot staging, boostback, the tower catch, reentry and the landing flip.">
+  <meta name="theme-color" content="#e9ebee">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b1016'/%3E%3Cpath d='M16 3c3 3 4 7 4 11v11h-8V14c0-4 1-8 4-11z' fill='%23c9d3de'/%3E%3Cpath d='M13 26h6l-3 5z' fill='%23ff7a1a'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/lab.css">
+  <link rel="stylesheet" href="css/raptor.css">
+  <link rel="stylesheet" href="css/catch.css">
+  <link rel="stylesheet" href="css/reentry.css">
+  <script type="importmap">
+  { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  } }
+  </script>
+</head>
+<body>
+
+<main>
+  <!-- ======================= FLIGHT LAB ======================= -->
+  <section class="fl" id="lab" aria-label="Starship 3D flight lab">
+    <div class="fl-stage">
+      <canvas class="fl-canvas" tabindex="0" aria-label="3D view of Starship. Drag to look around, scroll to zoom."></canvas>
+      <div class="fl-labels" aria-hidden="true"></div>
+      <div class="fl-loading" role="status"><span class="fl-spinner"></span>Preparing the launch site…</div>
+      <div class="fl-error" role="alert">
+        <h3>The 3D scene couldn't start</h3>
+        <p>Reload to try again. If it keeps happening, turn on hardware acceleration in your browser. The deep dives further down still work.</p>
+        <button onclick="location.reload()">Reload</button>
+      </div>
+    </div>
+
+    <div class="fl-card fl-brand">
+      <span class="fl-mark" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 1.2c1.6 1.5 2.3 3.6 2.3 5.6v5.4H5.7V6.8c0-2 .7-4.1 2.3-5.6Z" fill="#fbfaf7"/><path d="M6.6 13.2h2.8L8 15.4Z" fill="#f2681c"/></svg></span>
+      <div><b>Starship Flight Lab</b><span>An interactive mission model</span></div>
+    </div>
+
+    <div class="fl-card fl-clock" aria-live="off">
+      <span class="fl-t mono">T−00:30</span>
+      <span class="fl-phase">Fuelled and waiting</span>
+    </div>
+
+    <div class="fl-card fl-views" role="toolbar" aria-label="View">
+      <div class="fl-seg" role="group" aria-label="Camera">
+        <button data-cam="follow" aria-pressed="true" title="Camera rides alongside the vehicle">Chase</button>
+        <button data-cam="wide" aria-pressed="false" title="Pull back to see the surroundings">Overview</button>
+        <button data-cam="orbit" aria-pressed="false" title="Slowly circle the vehicle">Turntable</button>
+      </div>
+      <span class="fl-divider" aria-hidden="true"></span>
+      <div class="fl-seg" role="group" aria-label="Overlays">
+        <button class="fl-xray" aria-pressed="false" title="See the tanks and plumbing inside">X-ray</button>
+        <button class="fl-traj" aria-pressed="false" title="Show both flight paths over the planet">Trajectory</button>
+        <button class="fl-vec" aria-pressed="true" title="Show force vectors on the vehicle">Vectors</button>
+      </div>
+    </div>
+
+    <aside class="fl-card fl-log" aria-label="Flight log">
+      <div class="fl-card-h"><h2>Flight log</h2><span class="fl-k">Tap a step to jump</span></div>
+      <div class="fl-ending">
+        <span class="fl-k">Ending</span>
+        <div class="fl-seg sm" role="group" aria-label="How the ship comes home">
+          <button data-profile="splash" aria-pressed="true">Splashdown</button>
+          <button data-profile="catch" aria-pressed="false">Tower catch</button>
+        </div>
+      </div>
+      <div class="fl-log-scroll"></div>
+      <div class="fl-log-foot"><a href="#deep">Deep dives: engine, catch, reentry ↓</a></div>
+    </aside>
+
+    <aside class="fl-card fl-balance" aria-label="Force balance">
+      <div class="fl-card-h"><h2>Force balance</h2><span class="fl-ctx">On the pad</span></div>
+      <ul class="fl-bars"></ul>
+      <div class="fl-net"><span>Net</span><b class="mono fl-netv">0</b><span class="mono fl-accel">0.00 g</span></div>
+      <div class="fl-verdicts"></div>
+      <dl class="fl-tele"></dl>
+      <div class="fl-mass mono"><span class="fl-mass-total"></span><span class="fl-mass-prop"></span></div>
+    </aside>
+
+    <div class="fl-bottom">
+      <article class="fl-card fl-explain" aria-live="polite">
+        <p class="fl-eyebrow mono"><span class="fl-step"></span><span class="fl-when"></span></p>
+        <h3 class="fl-title"></h3>
+        <p class="fl-lede"></p>
+        <div class="fl-more why"><div><ul class="fl-points"></ul><p class="fl-foot"></p></div></div>
+        <div class="fl-more math"><div><div class="fl-math mono"></div></div></div>
+        <div class="fl-actions">
+          <button class="fl-link fl-whybtn" aria-expanded="false">Why it works <svg viewBox="0 0 12 12"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
+          <button class="fl-link fl-mathbtn" aria-expanded="false">Show the math <svg viewBox="0 0 12 12"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
+        </div>
+      </article>
+      <div class="fl-card fl-transport">
+        <button class="fl-play" aria-label="Play"><svg class="i-play" viewBox="0 0 16 16"><path d="M4.5 2.6v10.8l8.6-5.4Z"/></svg><svg class="i-pause" viewBox="0 0 16 16"><rect x="3.5" y="2.5" width="3" height="11" rx="1"/><rect x="9.5" y="2.5" width="3" height="11" rx="1"/></svg></button>
+        <button class="fl-icon fl-restart" aria-label="Back to the start of this chapter"><svg viewBox="0 0 16 16"><path d="M3.2 8a4.8 4.8 0 1 0 1.5-3.5"/><path d="M2.5 1.8v3.6h3.6"/></svg></button>
+        <div class="fl-scrub">
+          <div class="fl-track"></div>
+          <div class="fl-ticks"></div>
+          <div class="fl-fill"></div>
+          <input class="fl-range" type="range" min="0" max="1000" value="0" aria-label="Scrub through the chapter">
+        </div>
+        <span class="fl-story mono">00:00 / 00:00</span>
+        <div class="fl-seg sm" role="group" aria-label="Playback speed">
+          <button data-speed="0.5" aria-pressed="false">½×</button><button data-speed="1" aria-pressed="true">1×</button><button data-speed="2" aria-pressed="false">2×</button><button data-speed="4" aria-pressed="false">4×</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= INTRO STRIP ======================= -->
+  <section class="section intro" id="deep">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Go deeper</p>
+        <h2>How each piece actually works.</h2>
+        <p class="lede">The flight lab shows the whole mission and the forces at every moment. These sections take the three hardest parts apart: the engine, the catch, and coming home through the atmosphere.</p>
+      </div>
+      <nav class="deep-nav">
+        <a href="#sec-raptor"><span class="mono">01</span>Raptor engine</a>
+        <a href="#sec-catch"><span class="mono">02</span>Boostback &amp; the catch</a>
+        <a href="#sec-reentry"><span class="mono">03</span>Reentry &amp; the flip</a>
+        <a href="#sec-physics"><span class="mono">04</span>Physics &amp; sources</a>
+      </nav>
+    </div>
+  </section>
+
+  <section class="section" id="sec-raptor">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow"><span class="num">01</span> The Raptor engine</p>
+        <h2>Full-flow staged combustion: no propellant wasted.</h2>
+        <p class="lede">Raptor is the first full-flow staged combustion engine to fly. Every drop of methane and oxygen passes through a turbine before it is burned, which is how it reaches chamber pressures above 300 bar.</p>
+      </div>
+      <div id="mount-raptor"></div>
+    </div>
+  </section>
+
+  <section class="section" id="sec-catch">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow"><span class="num">02</span> Boostback &amp; the catch</p>
+        <h2>The tower that catches rockets.</h2>
+        <p class="lede">Super Heavy has no landing legs. It flips, flies itself back to the launch site and slows to a hover beside the tower, where two giant arms nicknamed the &ldquo;chopsticks&rdquo; close around it. Then try it yourself.</p>
+      </div>
+      <div id="mount-catch"></div>
+    </div>
+  </section>
+
+  <section class="section" id="sec-reentry">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow"><span class="num">03</span> Reentry &amp; the flip</p>
+        <h2>Falling sideways at 26,000 km/h.</h2>
+        <p class="lede">Starship comes home belly-first like a skydiver, shielded by thousands of hexagonal tiles and steered by four flaps. Seconds before touchdown it relights its engines and swings upright.</p>
+      </div>
+      <div id="mount-reentry"></div>
+    </div>
+  </section>
+
+  <section class="section" id="sec-physics">
+    <div class="wrap physics">
+      <div class="section-head">
+        <p class="eyebrow"><span class="num">04</span> Physics and sources</p>
+        <h2>What the lab is computing.</h2>
+        <p class="lede">This is a reconstruction for teaching, not SpaceX telemetry. The trajectory is modelled on public flight-test information; forces are calculated from it with textbook physics.</p>
+      </div>
+      <div class="physics-grid">
+        <div class="panel">
+          <h3 class="mono eq">ΣF = m·a</h3>
+          <p>Every arrow in the lab is an external force on the vehicle. Their vector sum, divided by the mass, is the acceleration. Upward force does not always mean upward motion: during the landing burn the net force points up while the vehicle is still falling, so it slows down (<a href="https://openstax.org/books/university-physics-volume-1/pages/5-3-newtons-second-law" target="_blank" rel="noopener">OpenStax: Newton's second law</a>).</p>
+        </div>
+        <div class="panel">
+          <h3>Thrust</h3>
+          <p>Each Raptor's thrust is modelled as T = T<sub>vac</sub> − (T<sub>vac</sub> − T<sub>sl</sub>)·p/p₀: it grows as the outside air pressure p falls. Sea-level Raptor ≈ 2.26 MN at sea level, 2.53 MN in vacuum; Raptor Vacuum ≈ 2.58 MN (<a href="https://www.grc.nasa.gov/www/k-12/rocket/rktthsum.html" target="_blank" rel="noopener">NASA: thrust equation</a>, <a href="https://en.wikipedia.org/wiki/SpaceX_Raptor" target="_blank" rel="noopener">Raptor</a>).</p>
+        </div>
+        <div class="panel">
+          <h3>Mass and propellant</h3>
+          <p>Propellant flow is ṁ = T / (I<sub>sp</sub>·g₀), integrated along the burn schedule, so the vehicle gets lighter every second. Assumed dry masses: booster 275 t, ship 130 t; about 3,500 t and 1,500 t of propellant (<a href="https://openstax.org/books/university-physics-volume-1/pages/9-7-rocket-propulsion" target="_blank" rel="noopener">OpenStax: rocket propulsion</a>).</p>
+        </div>
+        <div class="panel">
+          <h3>Gravity and drag</h3>
+          <p>Gravity falls off as g·(R/(R+h))². Drag is D = ½ρv²·C<sub>d</sub>·A with an exponential atmosphere (scale height 7.4 km); the ship's belly-first reentry uses ~430 m² of area and a little lift (L/D ≈ 0.3) (<a href="https://www.grc.nasa.gov/www/k-12/airplane/drageq.html" target="_blank" rel="noopener">NASA: drag equation</a>).</p>
+        </div>
+        <div class="panel">
+          <h3>Model assumptions</h3>
+          <p>Trajectory keyframes are interpolated with monotone cubic splines; the timeline is a compressed teaching sequence, with the real mission clock shown as T±. Downrange is mapped onto a curved Earth along a due-east track from Starbase, Texas. The full-reuse profile (one orbit, then a tower catch) is a projection of SpaceX's stated plans, not a flown mission.</p>
+        </div>
+        <div class="panel">
+          <h3>Visuals</h3>
+          <p>Vehicle and tower geometry are illustrative, not manufacturer CAD. Plumes, steam and plasma are visual approximations, not fluid simulations. Earth imagery: NASA Blue Marble (public domain). Arrow lengths use a square-root scale with a display cap; the numbers keep their calculated values.</p>
+        </div>
+      </div>
+      <p class="note">An independent educational project. Not affiliated with or endorsed by SpaceX. Figures are approximate and based on public information about Block 2 vehicles and flight tests through 2025.</p>
+    </div>
+  </section>
+</main>
+
+<script>
+  // If the 3D module fails to load (no WebGL, blocked CDN), show the fallback instead of a spinner forever.
+  addEventListener("error", e => { if (String(e.filename || "").includes("/lab/") || /WebGL/i.test(e.message || "")) document.getElementById("lab").classList.add("is-error"); }, true);
+  setTimeout(() => { const l = document.getElementById("lab"); if (!l.classList.contains("is-ready")) l.classList.add("is-error"); }, 25000);
+</script>
+<script type="module" src="js/lab/app.js"></script>
+<script type="module" src="js/raptor.js"></script>
+<script type="module" src="js/catch.js"></script>
+<script type="module" src="js/reentry.js"></script>
+</body>
+</html>
